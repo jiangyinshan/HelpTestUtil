@@ -16,7 +16,7 @@ public class AutoDownload {
         UrlListReader urlListReader = new UrlListReader();
         ArrayList<String> urlList = urlListReader.getUrlList(jsonPath);
         ArrayList<String> sortedUrlList = urlListReader.getSortedUrlList(urlList);
-        final String command_1 = "curl -o /Users/xm20190901/Downloads/AutoDownload/正式环境第一版/s3_2/";
+        final String command_1 = "curl -o /Users/xm20190901/Downloads/AutoDownload/测试照片处理结果/s3/";
         final String command_2 = ".gif ";
         int fileNum = 1;
         String shellCommand = "";
