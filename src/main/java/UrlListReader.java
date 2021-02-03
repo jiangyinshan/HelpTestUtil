@@ -62,7 +62,7 @@ public class UrlListReader {
      **/
     public static ArrayList<String> getSourceID(ArrayList<String> urlList) {
         ArrayList<String> SourceIDList = new ArrayList<String>();
-        String testFieldName = "5sadasd/";
+        String testFieldName = "pindasd/";
         String regex = "(?<=(" + testFieldName + ")).*?(?=(/))";
         for (String s : urlList
         ) {
@@ -82,10 +82,10 @@ public class UrlListReader {
         ArrayList<String> sourceIDList = getSourceID(urlList);
         ArrayList<String> sortedUrlList = new ArrayList<String>(40);
         sortedUrlList.addAll(urlList);
-        sortedUrlList.add(0,"1");
-        sortedUrlList.add(1,"2");
-        sortedUrlList.add(2,"3");
-        sortedUrlList.add(3,"4");
+        sortedUrlList.add(0, "");
+        sortedUrlList.add(1, "");
+        sortedUrlList.add(2, "");
+        sortedUrlList.add(3, "");
         for (int i = 0; i < sourceIDList.size(); i++) {
             switch (sourceIDList.get(i)) {
                 case tem1:
