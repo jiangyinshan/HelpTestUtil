@@ -8,15 +8,13 @@ import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AutoDownload {
-    final static String csvPath = "/Users/xm20190901/Downloads/response.csv";
-    final static String jsonPath = "/Users/xm20190901/Downloads/MprphSearch/1.json";
+public class Download {
 
-    public static void main(String[] args) {
-        UrlListReader urlListReader = new UrlListReader();
-        ArrayList<String> urlList = urlListReader.getUrlList(jsonPath);
-        ArrayList<String> sortedUrlList = urlListReader.getSortedUrlList(urlList);
-        final String command_1 = "curl -o /Users/xm20190901/Downloads/AutoDownload/测试照片处理结果/s9/";
+    public static void main(String[] args) throws IOException {
+        UrlListRead urlListRead = new UrlListRead();
+        ArrayList<String> urlList = urlListRead.getUrlList();
+        ArrayList<String> sortedUrlList = urlListRead.getSortedUrlList(urlList);
+        final String command_1 = "curl -o /Users/xm20190901/Downloads/AutoDownload/测试照片处理结果/s1/";
         final String command_2 = ".gif ";
         int fileNum = 1;
         String shellCommand = "";
