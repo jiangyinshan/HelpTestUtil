@@ -1,10 +1,9 @@
 import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
 import com.opencsv.exceptions.CsvException;
 import org.junit.Test;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.util.List;
 
@@ -18,5 +17,21 @@ public class csvAction {
         List<String[]> allRecords = reader.readAll();
         reader.close();
         return allRecords;
+    }
+
+    public void writeCSV(List<String[]> csvData) {
+        CSVWriter writer = null;
+        try {
+            writer = new CSVWriter(
+                    new OutputStreamWriter(new FileOutputStream("/Users/xm20190901/Downloads/iFace处理时间.csv"), Charset.forName("utf-8")));
+            writer.writeAll(csvData);
+            writer.flush();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -1,6 +1,7 @@
 
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.opencsv.CSVReader;
@@ -21,19 +22,20 @@ import java.util.Map;
 
 public class apiFactory {
     public static Log log = LogFactory.getLog(API.class.getName());
-    private boolean isUploadSuccess;
-    private boolean isVerifySuccess;
-    private boolean isAllTaskDone;
-    private boolean isAnyTaskDone;
-    private boolean isAllTaskInProcessing;
-    private boolean isAllTaskFailed;
-    private long upLoadCostTime;
-    private long uploadStartTime;
-    private long uploadSuccessTime;
-    private long anyTaskDoneTime;
-    private long allTaskDoneTime;
-    private long anyTaskDoneCostTime;
-    private long allTaskDoneCostTime;
+    public boolean isUploadSuccess;
+    public boolean isVerifySuccess;
+    public boolean isAllTaskDone;
+    public boolean isAnyTaskDone;
+    public boolean isAllTaskInProcessing;
+    public boolean isAllTaskFailed;
+    public long upLoadCostTime;
+    public long uploadStartTime;
+    public long uploadSuccessTime;
+    public long anyTaskDoneTime;
+    public long allTaskDoneTime;
+    public long anyTaskDoneCostTime;
+    public long allTaskDoneCostTime;
+    public boolean flag = true;
 
     public apiFactory() throws IOException, CsvException {
 
@@ -57,9 +59,14 @@ public class apiFactory {
         return this.isAnyTaskDone;
     }
 
+    /**
+     * 查询图片制作结果
+     *
+     * @param parms 字符串数组，存放请求参数。依次为：User-Agent，sign
+     */
     public String morphSearch(String[] parms) throws IOException, CsvException {
         OkHttpClient okHttpClient = new OkHttpClient();
-        HttpUrl httpUrl = HttpUrl.parse("http://gif-engine-test.kikakeyboard.com/v1/api/morph/kind/emotion/search")
+        HttpUrl httpUrl = HttpUrl.parse("https://gif-engine.kikakeyboard.com/v1/api/morph/kind/emotion/search")
                 .newBuilder()
                 .addQueryParameter("sign", parms[1])
                 .addQueryParameter("limitSize", "30")
@@ -78,25 +85,38 @@ public class apiFactory {
         String bodyData = body.string();
         JSONObject jsonObject = JSON.parseObject(bodyData);
         JSONObject dataObject = (JSONObject) jsonObject.get("data");
+        JSONArray gifList = (JSONArray) dataObject.get("gifList");
         String messageCode = dataObject.get("messageCode").toString();
         if (response.isSuccessful()) {
             log.info("morphSearch接口请求成功\n");
+            /**
+             *根据响应中messageCode决定是否保存部分任务处理成功的时间和所有任务全部处理完成的时间
+             * **/
             switch (messageCode) {
                 case "0":
-                    log.info("所有任务全部处理完成");
-                    allTaskDoneTime = System.currentTimeMillis();
-                    allTaskDoneCostTime = anyTaskDoneTime - uploadSuccessTime;
-                    log.info("所有任务处理完成耗时：" + allTaskDoneCostTime);
+                    if (gifList.size() == 26) {
+                        log.info("所有任务全部处理完成且成功，成功任务数量为:" + gifList.size());
+                        allTaskDoneTime = System.currentTimeMillis();
+                        allTaskDoneCostTime = allTaskDoneTime - uploadSuccessTime;
+                        log.info("所有任务处理完成耗时：" + allTaskDoneCostTime);
+                    } else {
+                        log.info("所有任务全部处理完成，部分任务失败，成功任务数量为" + gifList.size());
+                    }
                     isAllTaskDone = true;
                     isAllTaskFailed = false;
                     isAnyTaskDone = true;
                     isAllTaskInProcessing = false;
                     break;
                 case "4":
-                    log.info("部分任务处理成功");
-                    anyTaskDoneTime = System.currentTimeMillis();
-                    anyTaskDoneCostTime = anyTaskDoneTime - uploadSuccessTime;
-                    log.info("部分任务处理完成耗时：" + anyTaskDoneCostTime);
+                    if (isAnyTaskDone() != true) {
+                        log.info("部分任务处理成功");
+                        if (flag = true) {
+                            anyTaskDoneTime = System.currentTimeMillis();
+                            anyTaskDoneCostTime = anyTaskDoneTime - uploadSuccessTime;
+                            flag = false;
+                        }
+                        log.info("部分任务处理完成耗时：" + anyTaskDoneCostTime);
+                    }
                     isAnyTaskDone = true;
                     isAllTaskFailed = false;
                     isAllTaskInProcessing = false;
@@ -123,17 +143,18 @@ public class apiFactory {
     }
 
     /**
-     * POST请求
+     * 上传图片，开始制作
+     *
+     * @param parms 字符串数组，存放请求参数。依次为：User-Agent，sign，和图片路径path
      */
     public String uploadImage(String[] parms) throws Exception {
         OkHttpClient client = new OkHttpClient();
-        HttpUrl httpUrl = HttpUrl.parse("http://gif-engine-test.kikakeyboard.com/v1/api/morph/uploadImage");
+        HttpUrl httpUrl = HttpUrl.parse("https://gif-engine.kikakeyboard.com/v1/api/morph/uploadImage");
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("sign", parms[1])
                 .addFormDataPart("file", "/Users/xm20190901/Downloads/表情编辑测试图片集/用户照片-2/s4.jpg", RequestBody.create(MediaType.parse("multipart/form-data"), new File(parms[2])))
                 .build();
-
         Request request = new Request.Builder()
                 .header("User-Agent", parms[0])
                 .url(httpUrl.toString())
@@ -190,6 +211,22 @@ public class apiFactory {
 
     }
 
+    public void tearDown() {
+        isUploadSuccess = false;
+        isVerifySuccess = false;
+        isAllTaskDone = false;
+        isAnyTaskDone = false;
+        isAllTaskInProcessing = false;
+        isAllTaskFailed = false;
+        upLoadCostTime = 0;
+        uploadStartTime = 0;
+        uploadSuccessTime = 0;
+        anyTaskDoneTime = 0;
+        allTaskDoneTime = 0;
+        anyTaskDoneCostTime = 0;
+        allTaskDoneCostTime = 0;
+        flag = true;
+    }
 /*    public static void main(String args[]) throws IOException, CsvException {
         apiFactory factory = new apiFactory();
         factory.getRequest();
