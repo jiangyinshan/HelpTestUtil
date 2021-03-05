@@ -94,6 +94,9 @@ public class apiFactory {
              * **/
             switch (messageCode) {
                 case "0":
+                    /**
+                     * 只有所有26个任务全部处理成功才记录时间
+                     * **/
                     if (gifList.size() == 26) {
                         log.info("所有任务全部处理完成且成功，成功任务数量为:" + gifList.size());
                         allTaskDoneTime = System.currentTimeMillis();

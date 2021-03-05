@@ -26,7 +26,8 @@ public class UploadCase {
         ArrayList<String[]> resultList = new ArrayList<>();
         String[] desc = {"上传耗时", "部分任务处理完成耗时", "所有任务处理完成耗时"};
         resultList.add(desc);
-        for (int i = 0; i < 4; i++) {
+        Integer ti = 0;
+        for (int i = 0; i < 5; i++) {
             factory.uploadImage(parms);
             Thread.sleep(500);
             while (factory.isAllTaskDone() != true) {
@@ -37,18 +38,12 @@ public class UploadCase {
             resultList.add(timeSet);
             factory.tearDown();
         }
-//        while (factory.isAllTaskDone() != true) {
-//            Thread.sleep(500);
-//            factory.morphSearch(parms);
-//
-//        }
-
-//        String[] timeSet = {String.valueOf(factory.upLoadCostTime), String.valueOf(factory.anyTaskDoneCostTime), String.valueOf(factory.allTaskDoneCostTime)};
-/*        ArrayList<String[]> resultList = new ArrayList<>();
-        resultList.add(desc);
-        resultList.add(timeSet);*/
-
+        for (int i = 1; i < resultList.size(); i++) {
+            ti = ti + Integer.valueOf(resultList.get(i)[2]);
+        }
+        ti = ti / resultList.size() - 1;
+        String[] timeSet = {"", "", "", ti.toString()};
+        resultList.add(timeSet);
         csvAction.writeCSV(resultList);
-
     }
 }
