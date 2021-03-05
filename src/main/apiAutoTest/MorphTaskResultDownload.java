@@ -1,6 +1,4 @@
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.opencsv.exceptions.CsvException;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -8,12 +6,19 @@ import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Download {
+public class MorphTaskResultDownload {
 
-    public static void main(String[] args) throws IOException {
-        UrlListRead urlListRead = new UrlListRead();
-        ArrayList<String> urlList = urlListRead.getUrlList();
-        ArrayList<String> sortedUrlList = urlListRead.getSortedUrlList(urlList);
+    public static void main(String[] args) throws IOException, CsvException {
+        int TestCase = 0;//第一列测试集
+        String[] time;
+        csvAction csvAction = new csvAction();
+        List<String[]> csvData = csvAction.getCSVDataList();
+        String[] parms = csvData.get(TestCase);
+
+
+        MorphSourceUrlReader morphSourceUrlReader = new MorphSourceUrlReader();
+        ArrayList<String> urlList = morphSourceUrlReader.getUrlList();
+        ArrayList<String> sortedUrlList = morphSourceUrlReader.getSortedUrlList(urlList);
         final String command_1 = "curl -o /Users/xm20190901/Downloads/AutoDownload/测试照片处理结果/s1/";
         final String command_2 = ".gif ";
         int fileNum = 1;

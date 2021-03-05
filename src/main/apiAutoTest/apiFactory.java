@@ -21,7 +21,13 @@ import java.util.List;
 import java.util.Map;
 
 public class apiFactory {
+    private String morphSearchTestUrl = "http://gif-engine-test.kikakeyboard.com/v1/api/morph/kind/emotion/search";
+    private String uploadTestUrl = "http://gif-engine-test.kikakeyboard.com/v1/api/morph/uploadImage";
+    private String morphSearchUrl = "https://gif-engine.kikakeyboard.com/v1/api/morph/kind/emotion/search";
+    private String uploadUrl = "https://gif-engine.kikakeyboard.com/v1/api/morph/uploadImage";
+
     public static Log log = LogFactory.getLog(API.class.getName());
+    public int successTaskCount;
     public boolean isUploadSuccess;
     public boolean isVerifySuccess;
     public boolean isAllTaskDone;
@@ -66,7 +72,7 @@ public class apiFactory {
      */
     public String morphSearch(String[] parms) throws IOException, CsvException {
         OkHttpClient okHttpClient = new OkHttpClient();
-        HttpUrl httpUrl = HttpUrl.parse("https://gif-engine.kikakeyboard.com/v1/api/morph/kind/emotion/search")
+        HttpUrl httpUrl = HttpUrl.parse(morphSearchTestUrl)
                 .newBuilder()
                 .addQueryParameter("sign", parms[1])
                 .addQueryParameter("limitSize", "30")
@@ -105,6 +111,7 @@ public class apiFactory {
                     } else {
                         log.info("所有任务全部处理完成，部分任务失败，成功任务数量为" + gifList.size());
                     }
+                    successTaskCount = gifList.size();
                     isAllTaskDone = true;
                     isAllTaskFailed = false;
                     isAnyTaskDone = true;
@@ -152,7 +159,7 @@ public class apiFactory {
      */
     public String uploadImage(String[] parms) throws Exception {
         OkHttpClient client = new OkHttpClient();
-        HttpUrl httpUrl = HttpUrl.parse("https://gif-engine.kikakeyboard.com/v1/api/morph/uploadImage");
+        HttpUrl httpUrl = HttpUrl.parse(uploadTestUrl);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("sign", parms[1])
@@ -228,6 +235,7 @@ public class apiFactory {
         allTaskDoneTime = 0;
         anyTaskDoneCostTime = 0;
         allTaskDoneCostTime = 0;
+        successTaskCount = 0;
         flag = true;
     }
 /*    public static void main(String args[]) throws IOException, CsvException {

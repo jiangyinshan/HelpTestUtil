@@ -1,8 +1,4 @@
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.sun.tools.javac.util.Log;
-import jdk.nashorn.internal.parser.JSONParser;
+import com.opencsv.exceptions.CsvException;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -11,14 +7,19 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class JsonRead {
+public class MorphSeachResultJsonReader {
 
     /**
      * 传入json文件，解析成json字符串
      **/
-    public String getJson() throws IOException {
-        API api = new API();
-        String jsonStr = api.getRequest();
+    public String getJson() throws IOException, CsvException {
+        int TestCase = 0;//第一列测试集
+        String[] time;
+        csvAction csvAction = new csvAction();
+        List<String[]> csvData = csvAction.getCSVDataList();
+        String[] parms = csvData.get(TestCase);
+        apiFactory api = new apiFactory();
+        String jsonStr = api.morphSearch(parms);
         return jsonStr;
     }
 
@@ -36,11 +37,11 @@ public class JsonRead {
     }
 
     public static void main(String[] args) {
-        JsonRead jsonRead = new JsonRead();
+        MorphSeachResultJsonReader morphSeachResultJsonReader = new MorphSeachResultJsonReader();
         String json = "";
         try {
-            json = jsonRead.getJson();
-        } catch (IOException e) {
+            json = morphSeachResultJsonReader.getJson();
+        } catch (IOException | CsvException e) {
             e.printStackTrace();
         }
         String fieldName = "gifLocalCDNUrl";

@@ -1,17 +1,11 @@
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.opencsv.exceptions.CsvException;
 
-import java.awt.*;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
-public class UrlListRead {
+public class MorphSourceUrlReader {
     final static String jsonPath = "/Users/xm20190901/Downloads/MprphSearch/1.json";
     final static String tem1 = "eacc12a93b724f23a9f9295edb3d3cf7";
     final static String tem2 = "e20516c9193e4372a3200126e6617daa";
@@ -44,8 +38,8 @@ public class UrlListRead {
     /**
      * 读取morph查询接口响应结果json文件，获取所有item的gifLocalCDNUrl信息，存入urlList
      **/
-    public static ArrayList<String> getUrlList() throws IOException {
-        String jsonStr = new JsonRead().getJson();
+    public static ArrayList<String> getUrlList() throws IOException, CsvException {
+        String jsonStr = new MorphSeachResultJsonReader().getJson();
         String fieldName = "gifLocalCDNUrl";
         String regex = "(?<=(\"" + fieldName + "\":\")).*?(?=(\"))";
         Matcher matcher = Pattern.compile(regex).matcher(jsonStr);
@@ -189,16 +183,16 @@ public class UrlListRead {
         list.addAll(newList);
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, CsvException {
         final String command_1 = "curl -o /Users/xm20190901/Downloads/AutoDownload/近距离人像/";
         final String command_2 = ".gif ";
         int fileNum = 1;
         String shellCommand = "";
         String url = "";
         String command = "";
-        UrlListRead urlListRead = new UrlListRead();
-        ArrayList<String> urlList = urlListRead.getUrlList();
-        ArrayList<String> sortedList = urlListRead.getSortedUrlList(urlList);
+        MorphSourceUrlReader morphSourceUrlReader = new MorphSourceUrlReader();
+        ArrayList<String> urlList = morphSourceUrlReader.getUrlList();
+        ArrayList<String> sortedList = morphSourceUrlReader.getSortedUrlList(urlList);
         ArrayList<String> commandList = new ArrayList<String>();
 
     }
