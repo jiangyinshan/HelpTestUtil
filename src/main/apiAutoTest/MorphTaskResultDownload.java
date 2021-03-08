@@ -15,11 +15,10 @@ public class MorphTaskResultDownload {
         List<String[]> csvData = csvAction.getCSVDataList();
         String[] parms = csvData.get(TestCase);
 
-
         MorphSourceUrlReader morphSourceUrlReader = new MorphSourceUrlReader();
         ArrayList<String> urlList = morphSourceUrlReader.getUrlList();
         ArrayList<String> sortedUrlList = morphSourceUrlReader.getSortedUrlList(urlList);
-        final String command_1 = "curl -o /Users/xm20190901/Downloads/AutoDownload/测试照片处理结果/s1/";
+        final String command_1 = "curl -o /Users/xm20190901/Downloads/AutoDownload/测试照片处理结果/vivo9/";
         final String command_2 = ".gif ";
         int fileNum = 1;
         String shellCommand = "";
