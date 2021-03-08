@@ -38,8 +38,8 @@ public class MorphSourceUrlReader {
     /**
      * 读取morph查询接口响应结果json文件，获取所有item的gifLocalCDNUrl信息，存入urlList
      **/
-    public static ArrayList<String> getUrlList() throws IOException, CsvException {
-        String jsonStr = new MorphSeachResultJsonReader().getJson();
+    public static ArrayList<String> getUrlList(String[] parms) throws IOException, CsvException {
+        String jsonStr = new MorphSeachResultJsonReader().getJson(parms);
         String fieldName = "gifLocalCDNUrl";
         String regex = "(?<=(\"" + fieldName + "\":\")).*?(?=(\"))";
         Matcher matcher = Pattern.compile(regex).matcher(jsonStr);
@@ -191,8 +191,8 @@ public class MorphSourceUrlReader {
         String url = "";
         String command = "";
         MorphSourceUrlReader morphSourceUrlReader = new MorphSourceUrlReader();
-        ArrayList<String> urlList = morphSourceUrlReader.getUrlList();
-        ArrayList<String> sortedList = morphSourceUrlReader.getSortedUrlList(urlList);
+        /*        ArrayList<String> urlList = morphSourceUrlReader.getUrlList();*/
+        /*        ArrayList<String> sortedList = morphSourceUrlReader.getSortedUrlList(urlList);*/
         ArrayList<String> commandList = new ArrayList<String>();
 
     }
