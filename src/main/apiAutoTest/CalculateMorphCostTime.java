@@ -23,7 +23,7 @@ public class CalculateMorphCostTime {
         String[] desc = {"上传耗时", "部分任务处理完成耗时", "所有任务处理完成耗时", "成功处理的任务数量"};
         resultList.add(desc);
         Integer ti = 0;
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             parms = csvData.get(TestCase);
             factory.uploadImage(parms);
             Thread.sleep(500);

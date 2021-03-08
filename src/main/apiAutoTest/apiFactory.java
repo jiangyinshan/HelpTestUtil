@@ -72,7 +72,7 @@ public class apiFactory {
      */
     public String morphSearch(String[] parms) throws IOException, CsvException {
         OkHttpClient okHttpClient = new OkHttpClient();
-        HttpUrl httpUrl = HttpUrl.parse(morphSearchTestUrl)
+        HttpUrl httpUrl = HttpUrl.parse(morphSearchUrl)
                 .newBuilder()
                 .addQueryParameter("sign", parms[1])
                 .addQueryParameter("limitSize", "30")
@@ -159,7 +159,7 @@ public class apiFactory {
      */
     public String uploadImage(String[] parms) throws Exception {
         OkHttpClient client = new OkHttpClient();
-        HttpUrl httpUrl = HttpUrl.parse(uploadTestUrl);
+        HttpUrl httpUrl = HttpUrl.parse(uploadUrl);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("sign", parms[1])
