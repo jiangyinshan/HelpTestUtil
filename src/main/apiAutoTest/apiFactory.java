@@ -41,11 +41,11 @@ public class apiFactory {
     public boolean flag = true;
     public List<String[]> paramsList;
 
-    public apiFactory(String type) throws IOException, CsvException {
-        if (type.equals("测试环境")) {
+    public apiFactory(String environmentType) throws IOException, CsvException {
+        if (environmentType.equals("测试环境")) {
             uploadImageUrl = "http://gif-engine-test.kikakeyboard.com/v1/api/morph/uploadImage";
             morphSearchUrl = "http://gif-engine-test.kikakeyboard.com/v1/api/morph/kind/emotion/search";
-        } else if (type.equals("正式环境")) {
+        } else if (environmentType.equals("正式环境")) {
             uploadImageUrl = "https://gif-engine.kikakeyboard.com/v1/api/morph/kind/emotion/search";
             morphSearchUrl = "https://gif-engine.kikakeyboard.com/v1/api/morph/uploadImage";
         } else {
@@ -67,6 +67,27 @@ public class apiFactory {
         return this.isAnyTaskDone;
     }
 
+    /**
+     * 根据创建对象时给定的environmentType构造图片上传Request
+     **/
+    public Request uploadImageRequestCreate(String[] params) {
+        HttpUrl httpUrl = HttpUrl.parse(uploadImageUrl);
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("sign", params[1])
+                .addFormDataPart("file", "/Users/xm20190901/Downloads/表情编辑测试图片集/用户照片-2/s4.jpg", RequestBody.create(MediaType.parse("multipart/form-data"), new File(params[2])))
+                .build();
+        Request request = new Request.Builder()
+                .header("User-Agent", params[0])
+                .url(httpUrl.toString())
+                .post(requestBody)
+                .build();
+        return request;
+    }
+
+    /**
+     * 根据创建对象时给定的environmentType构造处理结果查询Request
+     **/
     public Request morphSearchRequestCreate(String[] params) {
         HttpUrl httpUrl = HttpUrl.parse(morphSearchUrl)
                 .newBuilder()
@@ -81,21 +102,6 @@ public class apiFactory {
                 .addHeader("User-Agent", params[0])
                 .addHeader("Connection", "keep-alive")
                 .addHeader("Content-Type", "multipart/form-data; boundary=<calculated when request is sent>")
-                .build();
-        return request;
-    }
-
-    public Request uploadImageRequestCreate(String[] params) {
-        HttpUrl httpUrl = HttpUrl.parse(uploadImageUrl);
-        RequestBody requestBody = new MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart("sign", params[1])
-                .addFormDataPart("file", "/Users/xm20190901/Downloads/表情编辑测试图片集/用户照片-2/s4.jpg", RequestBody.create(MediaType.parse("multipart/form-data"), new File(params[2])))
-                .build();
-        Request request = new Request.Builder()
-                .header("User-Agent", params[0])
-                .url(httpUrl.toString())
-                .post(requestBody)
                 .build();
         return request;
     }
