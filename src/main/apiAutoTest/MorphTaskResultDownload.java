@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MorphTaskResultDownload {
+    private final String TestingEnvironment = "测试环境";
+    private final String ReleaseEnvironment = "正式环境";
     public static int fileNum = 1;
     public static int resultFileNum = 1;
 
@@ -18,8 +20,8 @@ public class MorphTaskResultDownload {
     public String[] getparms(int coulnm) throws IOException, CsvException {
         csvAction csvAction = new csvAction();
         List<String[]> csvData = csvAction.getCSVDataList();
-        String[] parms = csvData.get(coulnm);
-        return parms;
+        String[] params = csvData.get(coulnm);
+        return params;
     }
 
     /**
@@ -27,9 +29,9 @@ public class MorphTaskResultDownload {
      * 每个用户所有图片下载完成后resultFileNum+1，为下一个用户下载图片的文件夹名
      * 每张图片下载完成后FileNum+1，为下一张图片的文件名
      **/
-    public void download(String[] parms) throws IOException, CsvException {
+    public void download(String[] params, String environmentType) throws IOException, CsvException {
         MorphSourceUrlReader morphSourceUrlReader = new MorphSourceUrlReader();
-        ArrayList<String> urlList = morphSourceUrlReader.getUrlList(parms);
+        ArrayList<String> urlList = morphSourceUrlReader.getUrlList(params, environmentType);
         ArrayList<String> sortedUrlList = morphSourceUrlReader.getSortedUrlList(urlList);
         final String command_1 = "curl -o /Users/xm20190901/Downloads/AutoDownload/全自动下载/s";
         String command_2 = command_1 + resultFileNum + "/";
@@ -72,37 +74,35 @@ public class MorphTaskResultDownload {
      *
      * @param UserParmsLocationInCsvFile 为用户参数在csv文件所处行数减1
      **/
-    public void singleUserResultDownload(int UserParmsLocationInCsvFile) throws IOException, CsvException {
-        String[] parms = getparms(UserParmsLocationInCsvFile);
-        download(parms);
+    public void singleUserResultDownload(int UserParmsLocationInCsvFile, String environmentType) throws IOException, CsvException {
+        String[] params = getparms(UserParmsLocationInCsvFile);
+        download(params, environmentType);
     }
 
     /**
      * 自动根据csv文件获取用户参数，查询morphSearch接口，下载图片
      **/
-    public void multiUserResultDownload() throws IOException, CsvException {
+    public void multiUserResultDownload(String environmentType) throws IOException, CsvException {
         csvAction csvAction = new csvAction();
         List<String[]> csvData = csvAction.getCSVDataList();
         for (int i = 0; i < csvData.size(); i++) {
-            download(csvData.get(i));
+            download(csvData.get(i), environmentType);
             reCount();
             resultFileNum++;
         }
 
-
     }
 
     /**
-     * 每个用户所有图片下载完成后调用此方法将fileNum重置为1
+     * 每个用户所有图片下载完成后调用此方法将fileNum重置为1，再次从1开始为每个用户处理成功的图片命名
      **/
     public void reCount() {
         fileNum = 1;
     }
 
-
     public static void main(String[] args) throws IOException, CsvException {
         MorphTaskResultDownload morphTaskResultDownload = new MorphTaskResultDownload();
-        morphTaskResultDownload.multiUserResultDownload();
+        morphTaskResultDownload.singleUserResultDownload(2, morphTaskResultDownload.TestingEnvironment);
 
     }
 }

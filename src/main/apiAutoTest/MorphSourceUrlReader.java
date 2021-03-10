@@ -38,8 +38,8 @@ public class MorphSourceUrlReader {
     /**
      * 读取morph查询接口响应结果json文件，获取所有item的gifLocalCDNUrl信息，存入urlList
      **/
-    public static ArrayList<String> getUrlList(String[] parms) throws IOException, CsvException {
-        String jsonStr = new MorphSeachResultJsonReader().getJson(parms);
+    public static ArrayList<String> getUrlList(String[] params, String environmentType) throws IOException, CsvException {
+        String jsonStr = new MorphSeachResultJsonReader().getJson(params, environmentType);
         String fieldName = "gifLocalCDNUrl";
         String regex = "(?<=(\"" + fieldName + "\":\")).*?(?=(\"))";
         Matcher matcher = Pattern.compile(regex).matcher(jsonStr);

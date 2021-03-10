@@ -21,38 +21,40 @@ import java.util.List;
 import java.util.Map;
 
 public class apiFactory {
-    private String morphSearchTestUrl = "http://gif-engine-test.kikakeyboard.com/v1/api/morph/kind/emotion/search";
-    private String uploadTestUrl = "http://gif-engine-test.kikakeyboard.com/v1/api/morph/uploadImage";
-    private String morphSearchUrl = "https://gif-engine.kikakeyboard.com/v1/api/morph/kind/emotion/search";
-    private String uploadUrl = "https://gif-engine.kikakeyboard.com/v1/api/morph/uploadImage";
-
     public static Log log = LogFactory.getLog(API.class.getName());
-    public int successTaskCount;
-    public boolean isUploadSuccess;
-    public boolean isVerifySuccess;
-    public boolean isAllTaskDone;
-    public boolean isAnyTaskDone;
-    public boolean isAllTaskInProcessing;
-    public boolean isAllTaskFailed;
-    public long upLoadCostTime;
-    public long uploadStartTime;
-    public long uploadSuccessTime;
-    public long anyTaskDoneTime;
-    public long allTaskDoneTime;
-    public long anyTaskDoneCostTime;
-    public long allTaskDoneCostTime;
+    public String uploadImageUrl;
+    public String morphSearchUrl;
+    public int successTaskCount;//处理成功的任务数量
+    public boolean isUploadSuccess;//图片上传是否成功
+    public boolean isVerifySuccess;//图片认证是否成功，由于以去除认证步骤，所以暂时无用
+    public boolean isAllTaskDone;//是否所有任务处理完成,messageCode=0
+    public boolean isAnyTaskDone;//是否有任一任务处理完成,messageCode=4
+    public boolean isAllTaskInProcessing;//是否所有任务仍在处理过程中,messageCode=3
+    public boolean isAllTaskFailed;//是否所有任务处理失败,messageCode=2
+    public long upLoadCostTime;//上传图片耗时
+    public long uploadStartTime;//上传图片开始时间
+    public long uploadSuccessTime;//上传图片成功时间
+    public long anyTaskDoneTime;//任一任务处理完成时间
+    public long allTaskDoneTime;//所有任务处理完成时间
+    public long anyTaskDoneCostTime;//任一任务处理完成耗时
+    public long allTaskDoneCostTime;//所有任务处理完成耗时
     public boolean flag = true;
+    public List<String[]> paramsList;
 
-    public apiFactory() throws IOException, CsvException {
-
+    public apiFactory(String type) throws IOException, CsvException {
+        if (type.equals("测试环境")) {
+            uploadImageUrl = "http://gif-engine-test.kikakeyboard.com/v1/api/morph/uploadImage";
+            morphSearchUrl = "http://gif-engine-test.kikakeyboard.com/v1/api/morph/kind/emotion/search";
+        } else if (type.equals("正式环境")) {
+            uploadImageUrl = "https://gif-engine.kikakeyboard.com/v1/api/morph/kind/emotion/search";
+            morphSearchUrl = "https://gif-engine.kikakeyboard.com/v1/api/morph/uploadImage";
+        } else {
+            log.fatal("请选择测试环境或正式环境");
+        }
+        csvAction csvAction = new csvAction();
+        paramsList = csvAction.getCSVDataList();
     }
 
-    /**
-     * 发送GET请求
-     *
-     * @return
-     */
-//    @Test
     public boolean isUploadSuccess() {
         return this.isUploadSuccess;
     }
@@ -65,16 +67,10 @@ public class apiFactory {
         return this.isAnyTaskDone;
     }
 
-    /**
-     * 查询图片制作结果
-     *
-     * @param parms 字符串数组，存放请求参数。依次为：User-Agent，sign
-     */
-    public String morphSearch(String[] parms) throws IOException, CsvException {
-        OkHttpClient okHttpClient = new OkHttpClient();
+    public Request morphSearchRequestCreate(String[] params) {
         HttpUrl httpUrl = HttpUrl.parse(morphSearchUrl)
                 .newBuilder()
-                .addQueryParameter("sign", parms[1])
+                .addQueryParameter("sign", params[1])
                 .addQueryParameter("limitSize", "30")
                 .addQueryParameter("text", "all")
                 .addQueryParameter("gifText", "2")
@@ -82,11 +78,36 @@ public class apiFactory {
                 .build();
         Request request = new Request.Builder()
                 .url(httpUrl.toString())
-                .addHeader("User-Agent", parms[0])
+                .addHeader("User-Agent", params[0])
                 .addHeader("Connection", "keep-alive")
                 .addHeader("Content-Type", "multipart/form-data; boundary=<calculated when request is sent>")
                 .build();
-        Response response = okHttpClient.newCall(request).execute();
+        return request;
+    }
+
+    public Request uploadImageRequestCreate(String[] params) {
+        HttpUrl httpUrl = HttpUrl.parse(uploadImageUrl);
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("sign", params[1])
+                .addFormDataPart("file", "/Users/xm20190901/Downloads/表情编辑测试图片集/用户照片-2/s4.jpg", RequestBody.create(MediaType.parse("multipart/form-data"), new File(params[2])))
+                .build();
+        Request request = new Request.Builder()
+                .header("User-Agent", params[0])
+                .url(httpUrl.toString())
+                .post(requestBody)
+                .build();
+        return request;
+    }
+
+    /**
+     * 查询图片制作结果
+     *
+     * @param params 字符串数组，存放请求参数。依次为：User-Agent，sign
+     */
+    public String morphSearch(String[] params) throws IOException, CsvException {
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Response response = okHttpClient.newCall(morphSearchRequestCreate(params)).execute();
         ResponseBody body = response.body();
         String bodyData = body.string();
         JSONObject jsonObject = JSON.parseObject(bodyData);
@@ -96,7 +117,9 @@ public class apiFactory {
         if (response.isSuccessful()) {
             log.info("morphSearch接口请求成功\n");
             /**
-             *根据响应中messageCode决定是否保存部分任务处理成功的时间和所有任务全部处理完成的时间
+             * 当morphSearch接口请求成功时根据响应中messageCode决定是否保存部分任务处理成功的时间和所有任务全部处理完成的时间
+             * 当messageCode为0，代表所有任务处理完成，并且有成功的任务。代表所有任务处理完成（isAllTaskDone=true），所有任务处理失败（isAllTaskFailed=false），任一任务处理成功（isAnyTaskDone=true），所有任务仍在处理中（isAllTaskInProcessing=false）
+             * 并且当返回的gifList.size等于任务数量的时候，即所有任务处理成功时，记录所有任务处理完成耗时（allTaskDoneCostTime），否则不记录时间
              * **/
             switch (messageCode) {
                 case "0":
@@ -155,31 +178,28 @@ public class apiFactory {
     /**
      * 上传图片，开始制作
      *
-     * @param parms 字符串数组，存放请求参数。依次为：User-Agent，sign，和图片路径path
+     * @param params 字符串数组，存放请求参数。依次为：User-Agent，sign，和图片路径path
      */
-    public String uploadImage(String[] parms) throws Exception {
+    public String uploadImage(String[] params) throws Exception {
         OkHttpClient client = new OkHttpClient();
-        HttpUrl httpUrl = HttpUrl.parse(uploadUrl);
-        RequestBody requestBody = new MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart("sign", parms[1])
-                .addFormDataPart("file", "/Users/xm20190901/Downloads/表情编辑测试图片集/用户照片-2/s4.jpg", RequestBody.create(MediaType.parse("multipart/form-data"), new File(parms[2])))
-                .build();
-        Request request = new Request.Builder()
-                .header("User-Agent", parms[0])
-                .url(httpUrl.toString())
-                .post(requestBody)
-                .build();
         uploadStartTime = System.currentTimeMillis();
-        Response response = client.newCall(request).execute();
+        Response response = client.newCall(uploadImageRequestCreate(params)).execute();
         String bodyData = response.body().string();
         JSONObject jsonObject = JSON.parseObject(bodyData);
         if (response.isSuccessful()) {
+            /**
+             * 当图片上传成功时，记录上传图片耗时
+             * 当图片上传失败时，记录响应码
+             * **/
             log.info("图片上传请求成功\n");
             uploadSuccessTime = System.currentTimeMillis();
             upLoadCostTime = uploadSuccessTime - uploadStartTime;
             log.info("图片上传耗时:" + upLoadCostTime);
-            this.isUploadSuccess = true;
+            isUploadSuccess = true;
+            /**
+             * 当errorCode为0时，即图片验证通过（isVerifySuccess=true），否则图片验证未通过（isVerifySuccess=false）
+             *
+             * **/
             if (jsonObject.get("errorCode").equals(0)) {
                 log.info("图片验证通过\n");
                 isVerifySuccess = true;
@@ -187,13 +207,11 @@ public class apiFactory {
                 isVerifySuccess = false;
             }
         } else {
-            this.isUploadSuccess = false;
+            isUploadSuccess = false;
             log.error("图片上传接口请求错误，响应码为：" + response.code() + "\n");
         }
         return bodyData;
-
     }
-
 
     /**
      * 提交Json
@@ -201,24 +219,18 @@ public class apiFactory {
 //    @Test
     public void postJsonRequest() throws IOException {
         OkHttpClient client = new OkHttpClient();
-
         Map<String, Object> map = new HashMap<>();
         map.put("name", "Tom");
         map.put("age", 23);
-
         Gson gson = new Gson();
         String data = gson.toJson(map);
-
 //        RequestBody requestBody = RequestBody.create(data, JSON);
-
         Request request = new Request.Builder()
                 .url("http://httpbin.org/post")
 //                .post(requestBody)
                 .build();
-
         Response response = client.newCall(request).execute();
         System.out.println(response.body().string());
-
     }
 
     public void tearDown() {

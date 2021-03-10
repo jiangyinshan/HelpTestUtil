@@ -12,9 +12,9 @@ public class MorphSeachResultJsonReader {
     /**
      * 传入json文件，解析成json字符串
      **/
-    public String getJson(String[] params) throws IOException, CsvException {
+    public String getJson(String[] params, String environmentType) throws IOException, CsvException {
         String[] time;
-        apiFactory api = new apiFactory();
+        apiFactory api = new apiFactory(environmentType);
         String jsonStr = api.morphSearch(params);
         return jsonStr;
     }
@@ -40,7 +40,7 @@ public class MorphSeachResultJsonReader {
         MorphSeachResultJsonReader morphSeachResultJsonReader = new MorphSeachResultJsonReader();
         String json = "";
         try {
-            json = morphSeachResultJsonReader.getJson(params);
+            json = morphSeachResultJsonReader.getJson(params, "测试环境");
         } catch (IOException | CsvException e) {
             e.printStackTrace();
         }
