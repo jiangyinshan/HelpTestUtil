@@ -16,7 +16,7 @@ public class CalculateMorphCostTime {
         String[] time;
         csvAction csvAction = new csvAction();
         List<String[]> csvData = csvAction.getCSVDataList();
-        String[] parms = csvData.get(TestCase);
+        String[] params = csvData.get(TestCase);
         CalculateMorphCostTime calculateMorphCostTime = new CalculateMorphCostTime();
         apiFactory factory = new apiFactory();
         ArrayList<String[]> resultList = new ArrayList<>();
@@ -24,12 +24,12 @@ public class CalculateMorphCostTime {
         resultList.add(desc);
         Integer ti = 0;
         for (int i = 0; i < 4; i++) {
-            parms = csvData.get(TestCase);
-            factory.uploadImage(parms);
+            params = csvData.get(TestCase);
+            factory.uploadImage(params);
             Thread.sleep(500);
             while (factory.isAllTaskDone() != true) {
                 Thread.sleep(500);
-                factory.morphSearch(parms);
+                factory.morphSearch(params);
             }
             String[] timeSet = {String.valueOf(factory.upLoadCostTime), String.valueOf(factory.anyTaskDoneCostTime), String.valueOf(factory.allTaskDoneCostTime), String.valueOf(factory.successTaskCount)};
             resultList.add(timeSet);
