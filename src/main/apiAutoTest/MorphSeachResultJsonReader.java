@@ -12,10 +12,10 @@ public class MorphSeachResultJsonReader {
     /**
      * 传入json文件，解析成json字符串
      **/
-    public String getJson(String[] parms) throws IOException, CsvException {
+    public String getJson(String[] params) throws IOException, CsvException {
         String[] time;
         apiFactory api = new apiFactory();
-        String jsonStr = api.morphSearch(parms);
+        String jsonStr = api.morphSearch(params);
         return jsonStr;
     }
 
@@ -35,12 +35,12 @@ public class MorphSeachResultJsonReader {
     public static void main(String[] args) throws IOException, CsvException {
         csvAction csvAction = new csvAction();
         List<String[]> csvData = csvAction.getCSVDataList();
-        String[] parms = csvData.get(0);
+        String[] params = csvData.get(0);
 
         MorphSeachResultJsonReader morphSeachResultJsonReader = new MorphSeachResultJsonReader();
         String json = "";
         try {
-            json = morphSeachResultJsonReader.getJson(parms);
+            json = morphSeachResultJsonReader.getJson(params);
         } catch (IOException | CsvException e) {
             e.printStackTrace();
         }
