@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 /**
  * 根据sticker item资源的后缀名为gif或jpg判断sticker pack的type为1或0
  **/
-public class TypeCheck {
+public class StickerTypeCheck {
     final static String jsonPath = "/Users/xm20190901/Downloads/StickerType.json";
 
     /**

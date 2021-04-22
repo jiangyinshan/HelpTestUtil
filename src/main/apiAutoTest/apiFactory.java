@@ -40,14 +40,15 @@ public class apiFactory {
     public long allTaskDoneCostTime;//所有任务处理完成耗时
     public boolean flag = true;
     public List<String[]> paramsList;
+    final public int ExecptResultSize = 64;
 
     public apiFactory(String environmentType) throws IOException, CsvException {
         if (environmentType.equals("测试环境")) {
             uploadImageUrl = "http://gif-engine-test.kikakeyboard.com/v1/api/morph/uploadImage";
             morphSearchUrl = "http://gif-engine-test.kikakeyboard.com/v1/api/morph/kind/emotion/search";
         } else if (environmentType.equals("正式环境")) {
-            uploadImageUrl = "https://gif-engine.kikakeyboard.com/v1/api/morph/kind/emotion/search";
-            morphSearchUrl = "https://gif-engine.kikakeyboard.com/v1/api/morph/uploadImage";
+            uploadImageUrl = "https://gif-engine.kikakeyboard.com/v1/api/morph/uploadImage";
+            morphSearchUrl = "https://gif-engine.kikakeyboard.com/v1/api/morph/kind/emotion/search";
         } else {
             log.fatal("请选择测试环境或正式环境");
         }
@@ -75,7 +76,7 @@ public class apiFactory {
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("sign", params[1])
-                .addFormDataPart("file", "/Users/xm20190901/Downloads/表情编辑测试图片集/用户照片-2/s4.jpg", RequestBody.create(MediaType.parse("multipart/form-data"), new File(params[2])))
+                .addFormDataPart("file", "测试图片", RequestBody.create(MediaType.parse("multipart/form-data"), new File(params[2])))
                 .build();
         Request request = new Request.Builder()
                 .header("User-Agent", params[0])
@@ -92,7 +93,8 @@ public class apiFactory {
         HttpUrl httpUrl = HttpUrl.parse(morphSearchUrl)
                 .newBuilder()
                 .addQueryParameter("sign", params[1])
-                .addQueryParameter("limitSize", "30")
+                .addQueryParameter("pageSize", "80")
+                .addQueryParameter("pageNum", "1")
                 .addQueryParameter("text", "all")
                 .addQueryParameter("gifText", "2")
                 .addQueryParameter("version", "1")
@@ -132,7 +134,7 @@ public class apiFactory {
                     /**
                      * 只有所有26个任务全部处理成功才记录时间
                      * **/
-                    if (gifList.size() == 26) {
+                    if (gifList.size() == ExecptResultSize) {
                         log.info("所有任务全部处理完成且成功，成功任务数量为:" + gifList.size());
                         allTaskDoneTime = System.currentTimeMillis();
                         allTaskDoneCostTime = allTaskDoneTime - uploadSuccessTime;

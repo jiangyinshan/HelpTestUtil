@@ -38,7 +38,7 @@ public class MorphSourceUrlReader {
     /**
      * 读取morph查询接口响应结果json文件，获取所有item的gifLocalCDNUrl信息，存入urlList
      **/
-    public static ArrayList<String> getUrlList(String[] params, String environmentType) throws IOException, CsvException {
+    public  ArrayList<String> getUrlList(String[] params, String environmentType) throws IOException, CsvException {
         String jsonStr = new MorphSeachResultJsonReader().getJson(params, environmentType);
         String fieldName = "gifLocalCDNUrl";
         String regex = "(?<=(\"" + fieldName + "\":\")).*?(?=(\"))";
@@ -46,6 +46,7 @@ public class MorphSourceUrlReader {
         ArrayList<String> urlList = new ArrayList<String>();
         while (matcher.find()) {
             String ret = matcher.group();
+            System.out.println(ret);
             urlList.add(ret);
         }
         return urlList;
@@ -54,15 +55,16 @@ public class MorphSourceUrlReader {
     /**
      * 正则表达式提取资源链接中素材图片ID
      **/
-    public static ArrayList<String> getSourceID(ArrayList<String> urlList) {
+    public  ArrayList<String> getSourceID(ArrayList<String> urlList) {
         ArrayList<String> SourceIDList = new ArrayList<String>();
-        String testFieldName = "pindasd/";
+        String testFieldName = "eb5c6a8e1d1b09c/";
         String regex = "(?<=(" + testFieldName + ")).*?(?=(/))";
         for (String s : urlList
         ) {
             Matcher matcher = Pattern.compile(regex).matcher(s);
             while (matcher.find()) {
                 String ret = matcher.group();
+                System.out.println(ret);
                 SourceIDList.add(ret);
             }
         }
@@ -72,7 +74,7 @@ public class MorphSourceUrlReader {
     /**
      * 将无规律排序的urlList根据素材id转换成按素材id排序的sortedUrlList
      **/
-    public static ArrayList<String> getSortedUrlList(ArrayList<String> urlList) {
+    public  ArrayList<String> getSortedUrlList(ArrayList<String> urlList) {
         ArrayList<String> sourceIDList = getSourceID(urlList);
         ArrayList<String> sortedUrlList = new ArrayList<String>(40);
         sortedUrlList.addAll(urlList);

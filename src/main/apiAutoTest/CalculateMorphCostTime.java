@@ -55,6 +55,6 @@ public class CalculateMorphCostTime {
 
     public static void main(String args[]) throws Exception {
         CalculateMorphCostTime calculateMorphCostTime = new CalculateMorphCostTime();
-        calculateMorphCostTime.calculateTime(calculateMorphCostTime.TestingEnvironment);
+        calculateMorphCostTime.calculateTime(calculateMorphCostTime.ReleaseEnvironment);
     }
 }

@@ -102,7 +102,7 @@ public class MorphTaskResultDownload {
 
     public static void main(String[] args) throws IOException, CsvException {
         MorphTaskResultDownload morphTaskResultDownload = new MorphTaskResultDownload();
-        morphTaskResultDownload.singleUserResultDownload(2, morphTaskResultDownload.TestingEnvironment);
+        morphTaskResultDownload.multiUserResultDownload( morphTaskResultDownload.TestingEnvironment);
 
     }
 }
