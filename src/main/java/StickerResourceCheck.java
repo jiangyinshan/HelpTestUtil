@@ -1,20 +1,12 @@
-import Bean.Resource;
-import Bean.StickerJsonRoot;
-import Bean.Stickers;
+import StickerBean.Resource;
+import StickerBean.StickerJsonRoot;
+import StickerBean.Stickers;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.JSONPObject;
-import com.sun.tools.javac.util.Log;
-import jdk.nashorn.internal.parser.JSONParser;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * 对kika sticker pack的webp资源进行check，是否所有kika sticker 资源都有webp资源，且资源路径正确

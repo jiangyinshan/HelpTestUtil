@@ -1,7 +1,7 @@
 /**
  * Copyright 2021 json.cn
  */
-package Bean;
+package StickerBean;
 import java.util.List;
 
 /**

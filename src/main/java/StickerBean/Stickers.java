@@ -1,7 +1,7 @@
 /**
  * Copyright 2021 json.cn
  */
-package Bean;
+package StickerBean;
 
 /**
  * Auto-generated: 2021-04-26 17:41:4

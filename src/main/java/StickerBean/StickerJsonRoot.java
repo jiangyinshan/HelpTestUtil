@@ -1,9 +1,7 @@
 /**
  * Copyright 2021 json.cn
  */
-package Bean;
-
-import Bean.Data;
+package StickerBean;
 
 /**
  * Auto-generated: 2021-04-26 17:33:27
