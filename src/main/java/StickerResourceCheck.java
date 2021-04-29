@@ -17,28 +17,6 @@ public class StickerResourceCheck {
     final static String stickerSearchApi_dev = "http://api-dev.kikakeyboard.com/v1/open/stickers/search";
     final static String stickerSearchApi_release = "https://api.kika.kikakeyboard.com/v1/open/stickers/search";
 
-    /**
-     * 传入json文件，解析成json字符串
-     **/
-    public String getJson(String path) {
-        String jsonStr = "";
-        try {
-            File file = new File(path);
-            FileReader fileReader = new FileReader(file);
-            Reader reader = new InputStreamReader(new FileInputStream(file), "Utf-8");
-            int ch = 0;
-            StringBuffer sb = new StringBuffer();
-            while ((ch = reader.read()) != -1) {
-                sb.append((char) ch);
-            }
-            fileReader.close();
-            reader.close();
-            jsonStr = sb.toString();
-            return jsonStr;
-        } catch (Exception e) {
-            return null;
-        }
-    }
 
     public static Request getSticekrBean(String url) {
         HttpUrl httpUrl = HttpUrl.parse(url)
