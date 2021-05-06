@@ -1,15 +1,7 @@
-/**
- * Copyright 2021 json.cn
- */
+
 package StickerBean;
 import java.util.List;
 
-/**
- * Auto-generated: 2021-04-26 17:33:27
- *
- * @author json.cn (i@json.cn)
- * @website http://www.json.cn/java2pojo/
- */
 public class Resource {
 
     private String type;
