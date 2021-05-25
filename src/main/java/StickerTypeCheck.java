@@ -53,7 +53,7 @@ public class StickerTypeCheck {
         ArrayList actualTypeList = new ArrayList(1100);
         ArrayList TypeList = new ArrayList(1100);
         OkHttpClient okHttpClient = new OkHttpClient();
-        Response response = okHttpClient.newCall(getSticekrBean(stickerSearchApi_release)).execute();
+        Response response = okHttpClient.newCall(getSticekrBean(stickerSearchApi_dev)).execute();
         String json = response.body().string();
         StickerJsonRoot stickerJsonRoot = JSONObject.parseObject(json, StickerJsonRoot.class);
         for (Resource r : stickerJsonRoot.getData().getResource()) {
