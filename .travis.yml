@@ -1,0 +1,34 @@
+language: java #设置语言
+
+java: oraclejdk8
+
+cache:
+  directories:
+  -$HOME/.m2
+
+install:
+  true
+script:
+  ./mvnw clean install
+  -bash <(curl -s https://codecov.io/bash)
+
+#after_script前5句是把部署分支的.git文件夹保护起来，用于保留历史部署的commit日志，否则部署分支永远只有一条commit记录。
+#命令里面的变量都是在Travis CI里配置过的。
+after_script:
+  - git clone https://${GH_REF} .temp
+  - cd .temp
+  - git checkout gh-pages
+  - cd ../
+  - mv .temp/.git dist
+  - cd dist
+  - git config user.name "${U_NAME}"
+  - git config user.email "${U_EMAIL}"
+  - git add .
+  - git commit -m ":construction_worker:- Build & Deploy by Travis CI"
+  - git push --force --quiet "https://${Travis_Token}@${GH_REF}" gh-pages:${D_BRANCH}
+# E: Build LifeCycle
+
+# 只有指定的分支提交时才会运行脚本
+branches:
+  only:
+    - master
