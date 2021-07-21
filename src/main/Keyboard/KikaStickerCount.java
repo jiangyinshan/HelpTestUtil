@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 
 /**
- * 输出kika 数量和名称
+ * 输出kika sticker数量和名称
  **/
 public class KikaStickerCount {
 

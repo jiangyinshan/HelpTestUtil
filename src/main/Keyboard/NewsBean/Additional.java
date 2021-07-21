@@ -2,14 +2,6 @@
  * Copyright 2021 json.cn
  */
 package NewsBean;
-import java.util.Date;
-
-/**
- * Auto-generated: 2021-05-18 17:19:20
- *
- * @author json.cn (i@json.cn)
- * @website http://www.json.cn/java2pojo/
- */
 public class Additional {
 
     private String Type;

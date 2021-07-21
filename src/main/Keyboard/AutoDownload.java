@@ -11,7 +11,7 @@ import java.util.List;
 public class AutoDownload {
     final static String csvPath = "/Users/xm20190901/Downloads/response.csv";
     final static String jsonPath = "/Users/xm20190901/Downloads/MprphSearch/1.json";
-
+/**根据iFace响应文件下载资源**/
     public static void main(String[] args) {
         UrlListReader urlListReader = new UrlListReader();
         ArrayList<String> urlList = urlListReader.getUrlList(jsonPath);

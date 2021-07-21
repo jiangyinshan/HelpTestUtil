@@ -1,23 +1,13 @@
 import StickerBean.Resource;
 import StickerBean.StickerJsonRoot;
-import StickerBean.Stickers;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.JSONPObject;
-import com.sun.tools.javac.util.Log;
-import jdk.nashorn.internal.parser.JSONParser;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 /**
  * 输出mojitok 的免费sticker pack所在位置

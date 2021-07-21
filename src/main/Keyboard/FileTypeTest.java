@@ -57,7 +57,7 @@ public class FileTypeTest {
         FILE_TYPE_MAP.put("asf", "3026B2758E66CF11"); //Windows Media (asf)    
         FILE_TYPE_MAP.put("mid", "4D546864");  //MIDI (mid)    
     }
-
+/**检测文件类型**/
     public static void main(String[] args) throws Exception {
         File f = new File("/Users/xm20190901/Downloads/2.png");
         if (f.exists()) {
@@ -72,7 +72,7 @@ public class FileTypeTest {
      * Created on 2010-7-1
      * <p>Discription:[getImageFileType,获取图片文件实际类型,若不是图片则返回null]</p>
      *
-     * @param File
+     * @param f
      * @return fileType
      * @author:[shixing_11@sina.com]
      */

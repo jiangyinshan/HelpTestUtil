@@ -17,7 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 输出mojitok 的免费sticker pack所在位置
+ * Post请求测试类
  **/
 public class AuthPostTest {
 
